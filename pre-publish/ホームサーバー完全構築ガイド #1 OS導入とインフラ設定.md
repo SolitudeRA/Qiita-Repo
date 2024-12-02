@@ -6,7 +6,7 @@ tags:
   - Ubuntu
   - Docker
   - homeserver
-local_updated_at: '2024-12-02T20:31:24+00:00'
+local_updated_at: '2024-12-02T20:33:18+00:00'
 ---
 シリーズ記事：
 [ホームサーバー完全構築ガイド #0 計画とハードウェア選定](https://qiita.com/SolitudeRA/items/0f1f95c31a52e1cc4bd4)
