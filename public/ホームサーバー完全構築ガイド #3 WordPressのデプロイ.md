@@ -7,8 +7,8 @@ tags:
   - homeserver
   - self-hosting
 private: false
-updated_at: '2024-12-03T04:56:26+09:00'
-id: 1b5943668cb87c93b5d1
+updated_at: '2024-11-11T18:53:24+09:00'
+id: a6b3e8e6aa9f0d5ac7dd
 organization_url_name: null
 slide: false
 ignorePublish: false

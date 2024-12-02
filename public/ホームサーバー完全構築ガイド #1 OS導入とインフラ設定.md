@@ -7,8 +7,8 @@ tags:
   - Docker
   - homeserver
 private: false
-updated_at: '2024-12-03T04:56:26+09:00'
-id: 7de4140c28bd6c6d91cd
+updated_at: '2024-11-11T18:51:48+09:00'
+id: 147a4c63a365842c1405
 organization_url_name: null
 slide: false
 ignorePublish: false
