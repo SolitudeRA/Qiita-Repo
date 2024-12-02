@@ -41,7 +41,7 @@ fs.readdirSync(sourceDir).forEach((file) => {
             const targetContent = fs.readFileSync(targetFilePath, 'utf-8');
             const { data: targetData, content: targetBody } = matter(targetContent);
 
-            const targetUpdatedAt = new Date(targetData.local_updated_at).getTime();
+            const targetUpdatedAt = new Date(targetData.updated_at).getTime();
             const sourceUpdatedAt = new Date(sourceData.local_updated_at).getTime();
 
             if (sourceUpdatedAt > targetUpdatedAt) {
