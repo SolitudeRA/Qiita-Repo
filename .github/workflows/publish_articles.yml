@@ -33,7 +33,8 @@ jobs:
       - name: Parse Articles
         run: node scripts/parse_articles.js
 
-      - uses: increments/qiita-cli/actions/publish@v1
+      - name: Publish to Qiita
+        uses: increments/qiita-cli/actions/publish@v1
         with:
           qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
           root: "."
