@@ -1,4 +1,4 @@
-name: Parse Articles to Public
+name: Publish Articles to Qiita
 
 on:
   push:
