@@ -28,7 +28,13 @@ jobs:
           node-version: "22.11.0"
 
       - name: Install Dependencies
-        run: npm install gray-matter fs-extra
+        run: npm install gray-matter fs-extra @qiita/qiita-cli
+
+      - name: Set Qiita Token
+        run: echo "QIITA_TOKEN=${{ secrets.QIITA_REPO_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Pull from Qiita
+        run: npx qiita pull
 
       - name: Parse Articles
         run: node scripts/parse-articles.js
@@ -41,6 +47,9 @@ jobs:
         with:
           qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
           root: "."
+
+      - name: Pull from Qiita
+        run: npx qiita pull
 
       - name: Generate Series Links
         run: node scripts/generate-series-links.js ./pre-publish ./public

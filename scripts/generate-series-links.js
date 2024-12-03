@@ -77,7 +77,7 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
             // 現在の記事を除外し、シリーズリンクを生成
             const filteredArticles = articlesInSeries.filter((a) => a.title !== article.title);
 
-            const seriesLinks = `${series} シリーズ記事：\n` + filteredArticles.map((filteredArticle, idx) => {
+            const seriesLinks = `${series} シリーズ記事：\n\n` + filteredArticles.map((filteredArticle, idx) => {
                 const targetArticle = publicArticles.find((pub) => pub.title === filteredArticle.title);
                 if (!targetArticle || !targetArticle.id) {
                     console.error(`エラー: 該当する public 記事が見つかりません: ${filteredArticle.title}`);
