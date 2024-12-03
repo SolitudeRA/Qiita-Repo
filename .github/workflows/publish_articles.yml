@@ -33,6 +33,9 @@ jobs:
       - name: Parse Articles
         run: node scripts/parse-articles.js
 
+      - name: Generate Series Links
+        run: node scripts/generate-series-links.js ./pre-publish ./public
+
       - name: Publish to Qiita (First Pass)
         uses: increments/qiita-cli/actions/publish@v1
         with:
