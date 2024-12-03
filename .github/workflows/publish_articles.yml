@@ -37,7 +37,7 @@ jobs:
         run: npx qiita pull
 
       - name: Sync remote to local
-        run: node sync-remote-to-public.js
+        run: node scripts/sync-remote-to-public.js
 
       - name: Parse Articles
         run: node scripts/parse-articles.js
@@ -52,7 +52,7 @@ jobs:
         run: npx qiita pull
 
       - name: Sync remote to local
-        run: node sync-remote-to-public.js
+        run: node scripts/sync-remote-to-public.js
 
       - name: Generate Series Links
         run: node scripts/generate-series-links.js ./pre-publish ./public
