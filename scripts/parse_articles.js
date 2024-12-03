@@ -2,16 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-// 定义源目录和目标目录
+// ソースディレクトリとターゲットディレクトリを定義
 const sourceDir = path.join(__dirname, '../pre-publish');
 const targetDir = path.join(__dirname, '../public');
 
-// 确保目标目录存在
+// ターゲットディレクトリが存在するか確認
 if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
 }
 
-// 遍历 `pre-publish` 文件夹中的 Markdown 文件
+// `pre-publish` フォルダ内のMarkdownファイルを処理
 fs.readdirSync(sourceDir).forEach((file) => {
     const sourceFilePath = path.join(sourceDir, file);
 
@@ -19,13 +19,13 @@ fs.readdirSync(sourceDir).forEach((file) => {
         const sourceContent = fs.readFileSync(sourceFilePath, 'utf-8');
         const { data: sourceData, content: sourceBody } = matter(sourceContent);
 
-        // 检查是否存在 `title` 和 `local_updated_at`
+        // `title` と `local_updated_at` が存在するか確認
         if (!sourceData.title || !sourceData.local_updated_at) {
-            console.error(`Error: Missing required fields (title or local_updated_at) in ${file}. Skipping...`);
+            console.error(`エラー: 必須フィールド (title または local_updated_at) が見つかりません: ${file}。スキップします...`);
             return;
         }
 
-        // 查找 `public` 中是否有相同标题的文件
+        // `public` 内で同じタイトルのファイルを検索
         const targetFile = fs
             .readdirSync(targetDir)
             .find((targetFile) => {
@@ -35,7 +35,7 @@ fs.readdirSync(sourceDir).forEach((file) => {
                 return targetData.title === sourceData.title;
             });
 
-        // 如果找到相同标题的文件
+        // 同じタイトルのファイルが見つかった場合
         if (targetFile) {
             const targetFilePath = path.join(targetDir, targetFile);
             const targetContent = fs.readFileSync(targetFilePath, 'utf-8');
@@ -45,16 +45,16 @@ fs.readdirSync(sourceDir).forEach((file) => {
             const sourceUpdatedAt = new Date(sourceData.local_updated_at).getTime();
 
             if (sourceUpdatedAt > targetUpdatedAt) {
-                console.log(`Updating content for: ${targetFile} (newer version detected)`);
+                console.log(`更新中: ${targetFile} (新しいバージョンが検出されました)`);
 
-                // 仅更新内容，保持头部不变
+                // 内容のみ更新し、ヘッダーは保持
                 const updatedContent = matter.stringify(sourceBody, targetData);
                 fs.writeFileSync(targetFilePath, updatedContent, 'utf-8');
             } else {
                 console.log(`Skipping: ${targetFile} (No updates detected)`);
             }
         } else {
-            // 合并默认字段（仅当文件不存在时）
+            // デフォルトフィールドをマージ (ファイルが存在しない場合のみ)
             const defaultFields = {
                 title: 'No Title',
                 tags: ['default'],
@@ -69,7 +69,7 @@ fs.readdirSync(sourceDir).forEach((file) => {
 
             const metadata = { ...defaultFields, ...sourceData };
 
-            // 如果 `tags` 字段为空，设置默认值
+            // `tags` フィールドが空の場合、デフォルト値を設定
             if (!metadata.tags || metadata.tags.length === 0) {
                 metadata.tags = ['default'];
             }
@@ -82,12 +82,12 @@ fs.readdirSync(sourceDir).forEach((file) => {
     }
 });
 
-// 格式化日期为 `YYYY-MM-DDTHH:mm:ss+HH:mm` 格式
+// 日付を `YYYY-MM-DDTHH:mm:ss+HH:mm` フォーマットで整形
 function formatWithTimezone(date) {
-    const offset = -date.getTimezoneOffset(); // 获取时区偏移，单位是分钟
-    const sign = offset >= 0 ? "+" : "-"; // 判断时区偏移正负号
-    const hours = Math.abs(Math.floor(offset / 60)).toString().padStart(2, "0"); // 时区小时部分
-    const minutes = Math.abs(offset % 60).toString().padStart(2, "0"); // 时区分钟部分
+    const offset = -date.getTimezoneOffset(); // タイムゾーンのオフセットを分単位で取得
+    const sign = offset >= 0 ? "+" : "-"; // タイムゾーンの正負を判定
+    const hours = Math.abs(Math.floor(offset / 60)).toString().padStart(2, "0");
+    const minutes = Math.abs(offset % 60).toString().padStart(2, "0");
 
     return (
         date.getFullYear() +
