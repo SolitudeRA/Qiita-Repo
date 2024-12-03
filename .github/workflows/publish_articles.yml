@@ -33,8 +33,17 @@ jobs:
       - name: Parse Articles
         run: node scripts/parse_articles.js
 
-      - name: Publish to Qiita
+      - name: Publish to Qiita (First Pass)
         uses: increments/qiita-cli/actions/publish@v1
         with:
           qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
           root: "."
+
+      - name: Generate Series Links
+        run: node scripts/generate-series-links.js ./pre-publish ./public
+
+      - name: Publish to Qiita (Second Pass)
+        uses: increments/qiita-cli/actions/publish@v1
+        with:
+          qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
+          root: "public"
