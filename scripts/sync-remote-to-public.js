@@ -47,6 +47,6 @@ const syncRemoteToPublic = (remoteDir, publicDir) => {
 };
 
 // 调用函数
-const remoteDir = path.join(__dirname, 'public', '.remote');
-const publicDir = path.join(__dirname, 'public');
+const remoteDir = path.join(__dirname, '..', 'public', '.remote');
+const publicDir = path.join(__dirname, '..', 'public');
 syncRemoteToPublic(remoteDir, publicDir);
