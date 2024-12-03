@@ -86,10 +86,12 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
                 return `[${filteredArticle.title}](https://qiita.com/SolitudeRA/items/${targetArticle.id})`;
             }).filter(Boolean))].join('\n');
 
-            // 現在の記事に既存のシリーズリンクがあるか確認し、削除
+            // 現在の記事に既存のシリーズリンクがあるか確認
             const contentLines = publicArticle.content.split('\n');
             const existingSeriesStartIndex = contentLines.findIndex((line) => line.startsWith(`${series} シリーズ記事：`));
+
             if (existingSeriesStartIndex !== -1) {
+                // 既存のシリーズリンクをすべて削除
                 let endIndex = existingSeriesStartIndex + 1;
                 while (endIndex < contentLines.length && contentLines[endIndex].startsWith('[')) {
                     endIndex++;
