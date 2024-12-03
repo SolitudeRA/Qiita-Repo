@@ -3,18 +3,18 @@ const path = require('path');
 const matter = require('gray-matter');
 
 /**
- * 根据 pre-publish 和 public 中的文章生成系列文章的目录
- * @param {string} prePublishDir - 包含需要生成系列的文章的目录
- * @param {string} publicDir - 已发布文章的目录
+ * pre-publish と public にある記事に基づいてシリーズ記事のリンクを生成する
+ * @param {string} prePublishDir - シリーズ記事を含むディレクトリ
+ * @param {string} publicDir - 公開済みの記事が格納されたディレクトリ
  */
 const generateSeriesLinks = (prePublishDir, publicDir) => {
-    // 检查目录是否存在
+    // ディレクトリが存在するか確認
     if (!fs.existsSync(prePublishDir) || !fs.existsSync(publicDir)) {
-        console.error(`Error: One or both directories not found: ${prePublishDir}, ${publicDir}`);
+        console.error(`エラー: ディレクトリが見つかりません: ${prePublishDir}, ${publicDir}`);
         process.exit(1);
     }
 
-    // 读取 pre-publish 中的文章，提取 title 和 series
+    // pre-publish 内の記事を読み込み、タイトルとシリーズを抽出
     const prePublishArticles = fs.readdirSync(prePublishDir)
         .filter((file) => file.endsWith('.md'))
         .map((file) => {
@@ -24,17 +24,17 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
             return {
                 file,
                 title: parsed.data.title,
-                series: parsed.data.series || null, // 如果没有 series 属性，设为 null
+                series: parsed.data.series || null, // series プロパティがない場合、null とする
             };
         })
-        .filter((article) => article.series); // 过滤掉没有 series 或值为 null 的文章
+        .filter((article) => article.series); // series がないまたは null の記事を除外
 
     if (prePublishArticles.length === 0) {
-        console.log("No articles with 'series' found in pre-publish directory. Exiting.");
+        console.log("シリーズが定義されている記事が pre-publish ディレクトリにありません。終了します。");
         return;
     }
 
-    // 读取 public 中的文章，提取 title 和 id
+    // public 内の記事を読み込み、タイトルと ID を抽出
     const publicArticles = fs.readdirSync(publicDir)
         .filter((file) => file.endsWith('.md'))
         .map((file) => {
@@ -50,7 +50,7 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
             };
         });
 
-    // 按 series 分组 pre-publish 文章
+    // pre-publish 内の記事を series ごとにグループ化
     const seriesMap = {};
     prePublishArticles.forEach((article) => {
         if (!seriesMap[article.series]) {
@@ -59,53 +59,55 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
         seriesMap[article.series].push(article);
     });
 
-    // 为每个 series 生成目录并更新 public 中的文章
+    // 各シリーズについてリンクを生成し、public 内の記事を更新
     Object.keys(seriesMap).forEach((series) => {
         const articlesInSeries = seriesMap[series];
 
-        // 按文件名排序（可以根据需求调整排序逻辑）
+        // ファイル名順にソート（必要に応じてソートロジックを変更可能）
         articlesInSeries.sort((a, b) => a.file.localeCompare(b.file));
 
-        // 查找对应的 public 文件，获取 id 并生成链接
-        const seriesLinks = `シリーズ記事：\n` + articlesInSeries.map((article, index) => {
-            const publicArticle = publicArticles.find((pub) => pub.title === article.title);
-            if (!publicArticle || !publicArticle.id) {
-                console.error(`Error: Could not find corresponding public article for title: ${article.title}`);
-                process.exit(1);
-            }
-            return `[${series} #${index + 1} ${article.title}](https://qiita.com/SolitudeRA/items/${publicArticle.id})`;
-        }).join('\n');
-
-        // 更新 public 中的文章
-        articlesInSeries.forEach((article) => {
+        // public 内の記事を更新
+        articlesInSeries.forEach((article, index) => {
             const publicArticle = publicArticles.find((pub) => pub.title === article.title);
             if (!publicArticle) {
-                console.error(`Error: Could not find corresponding public article for title: ${article.title}`);
+                console.error(`エラー: 該当する public 記事が見つかりません: ${article.title}`);
                 return;
             }
 
-            // 检查当前文章是否已有系列目录
-            const contentLines = publicArticle.content.split('\n');
-            const existingSeriesIndex = contentLines.findIndex((line) => line.startsWith('シリーズ記事：'));
+            // 現在の記事を除外し、シリーズリンクを生成
+            const filteredArticles = articlesInSeries.filter((a) => a.title !== article.title);
 
-            // 如果已存在目录且未改变，则跳过更新
+            const seriesLinks = `${series} シリーズ記事：\n` + filteredArticles.map((filteredArticle, idx) => {
+                const targetArticle = publicArticles.find((pub) => pub.title === filteredArticle.title);
+                if (!targetArticle || !targetArticle.id) {
+                    console.error(`エラー: 該当する public 記事が見つかりません: ${filteredArticle.title}`);
+                    process.exit(1);
+                }
+                return `[${filteredArticle.title}](https://qiita.com/SolitudeRA/items/${targetArticle.id})`;
+            }).join('\n');
+
+            // 現在の記事に既存のシリーズリンクがあるか確認
+            const contentLines = publicArticle.content.split('\n');
+            const existingSeriesIndex = contentLines.findIndex((line) => line.startsWith(`${series} シリーズ記事：`));
+
+            // 既存のシリーズリンクがあり、変更がない場合はスキップ
             if (existingSeriesIndex !== -1) {
-                const existingLinks = contentLines.slice(existingSeriesIndex, existingSeriesIndex + articlesInSeries.length + 1).join('\n');
+                const existingLinks = contentLines.slice(existingSeriesIndex, existingSeriesIndex + filteredArticles.length + 1).join('\n');
                 if (existingLinks === seriesLinks) {
                     console.log(`No changes for: ${publicArticle.file}. Skipping.`);
                     return;
                 }
 
-                // 替换已有目录
-                contentLines.splice(existingSeriesIndex, articlesInSeries.length + 1, ...seriesLinks.split('\n'));
+                // 既存のシリーズリンクを置き換え
+                contentLines.splice(existingSeriesIndex, filteredArticles.length + 1, ...seriesLinks.split('\n'));
                 console.log(`Updated series links for: ${publicArticle.file}`);
             } else {
-                // 未插入系列目录，直接在开头添加
+                // シリーズリンクが未挿入の場合、記事の先頭に追加
                 contentLines.unshift(seriesLinks);
                 console.log(`Inserted series links for: ${publicArticle.file}`);
             }
 
-            // 更新文章内容
+            // 記事内容を更新
             const updatedContent = contentLines.join('\n');
             const newFileContent = matter.stringify(updatedContent, publicArticle.metadata);
 
@@ -117,16 +119,16 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
     console.log('Series links generated and updated successfully.');
 };
 
-// 导出函数以便在其他文件中使用
+// 他のファイルで使用するためのエクスポート
 module.exports = generateSeriesLinks;
 
-// 如果直接运行文件，则从命令行参数中获取目录并执行
+// コマンドライン引数からディレクトリを取得して実行
 if (require.main === module) {
     const prePublishDir = process.argv[2];
     const publicDir = process.argv[3];
 
     if (!prePublishDir || !publicDir) {
-        console.error("Error: Missing directory arguments. Usage: node generate-series-links.js <pre-publish-dir> <public-dir>");
+        console.error("エラー: ディレクトリ引数が不足しています。使用方法: node generate-series-links.js <pre-publish-dir> <public-dir>");
         process.exit(1);
     }
 

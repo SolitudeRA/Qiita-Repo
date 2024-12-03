@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "@qiita/qiita-cli": "^1.6.1"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "gray-matter": "^4.0.3"
   }
 }
