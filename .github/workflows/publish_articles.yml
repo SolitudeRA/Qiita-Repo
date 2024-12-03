@@ -43,10 +43,7 @@ jobs:
         run: node scripts/generate-series-links.js ./pre-publish ./public
 
       - name: Publish to Qiita (First Pass)
-        uses: increments/qiita-cli/actions/publish@v1
-        with:
-          qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
-          root: "."
+        run: npx qiita publish --all --force
 
       - name: Pull from Qiita
         run: npx qiita pull
@@ -55,7 +52,4 @@ jobs:
         run: node scripts/generate-series-links.js ./pre-publish ./public
 
       - name: Publish to Qiita (Second Pass)
-        uses: increments/qiita-cli/actions/publish@v1
-        with:
-          qiita-token: ${{ secrets.QIITA_REPO_TOKEN }}
-          root: "public"
+        run: npx qiita publish --all --force
