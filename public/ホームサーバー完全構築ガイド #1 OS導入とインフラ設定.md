@@ -7,16 +7,12 @@ tags:
   - Docker
   - homeserver
 private: false
-updated_at: '2024-11-11T18:51:48+09:00'
+updated_at: '2024-12-03T17:29:22+09:00'
 id: 147a4c63a365842c1405
 organization_url_name: null
 slide: false
 ignorePublish: false
 ---
-シリーズ記事：
-[ホームサーバー完全構築ガイド #0 計画とハードウェア選定](https://qiita.com/SolitudeRA/items/0f1f95c31a52e1cc4bd4)
-[ホームサーバー完全構築ガイド #2 サービス群の選定](https://qiita.com/SolitudeRA/items/d5cb8393fc55d657eab7)
-[ホームサーバー完全構築ガイド #3 WordPressのデプロイ](https://qiita.com/SolitudeRA/items/a6b3e8e6aa9f0d5ac7dd)
 
 # OSのインストール
 
