@@ -8,6 +8,9 @@ const matter = require('gray-matter');
  * @param {string} publicDir - 公開済みの記事が格納されたディレクトリ
  */
 const generateSeriesLinks = (prePublishDir, publicDir) => {
+    const SERIES_START = '<!-- START_SERIES -->';
+    const SERIES_END = '<!-- END_SERIES -->';
+
     // ディレクトリが存在するか確認
     if (!fs.existsSync(prePublishDir) || !fs.existsSync(publicDir)) {
         console.error(`エラー: ディレクトリが見つかりません: ${prePublishDir}, ${publicDir}`);
@@ -77,32 +80,29 @@ const generateSeriesLinks = (prePublishDir, publicDir) => {
             // 現在の記事を除外し、シリーズリンクを生成
             const filteredArticles = articlesInSeries.filter((a) => a.title !== article.title);
 
-            const seriesLinks = `${series} シリーズ記事：\n\n` + [...new Set(filteredArticles.map((filteredArticle) => {
+            const seriesLinks = `${SERIES_START}\n\n` + filteredArticles.map((filteredArticle) => {
                 const targetArticle = publicArticles.find((pub) => pub.title === filteredArticle.title);
                 if (!targetArticle || !targetArticle.id) {
                     console.error(`エラー: 該当する public 記事が見つかりません: ${filteredArticle.title}`);
                     return null;
                 }
                 return `[${filteredArticle.title}](https://qiita.com/SolitudeRA/items/${targetArticle.id})`;
-            }).filter(Boolean))].join('\n');
+            }).filter(Boolean).join('\n') + `\n\n${SERIES_END}`;
 
-            // 現在の記事に既存のシリーズリンクがあるか確認
+            // 記事内容を取得し、シリーズリンクブロックを更新
             const contentLines = publicArticle.content.split('\n');
-            const existingSeriesStartIndex = contentLines.findIndex((line) => line.startsWith(`${series} シリーズ記事：`));
+            const startIndex = contentLines.indexOf(SERIES_START);
+            const endIndex = contentLines.indexOf(SERIES_END);
 
-            if (existingSeriesStartIndex !== -1) {
-                // 既存のシリーズリンクをすべて削除
-                let endIndex = existingSeriesStartIndex + 1;
-                while (endIndex < contentLines.length && contentLines[endIndex].startsWith('[')) {
-                    endIndex++;
-                }
-                contentLines.splice(existingSeriesStartIndex, endIndex - existingSeriesStartIndex);
-                console.log(`旧シリーズリンクを削除しました: ${publicArticle.file}`);
+            if (startIndex !== -1 && endIndex !== -1) {
+                // 既存のシリーズリンクを置き換え
+                contentLines.splice(startIndex, endIndex - startIndex + 1, ...seriesLinks.split('\n'));
+                console.log(`シリーズリンクを更新しました: ${publicArticle.file}`);
+            } else {
+                // シリーズリンクが存在しない場合、追加
+                contentLines.unshift(seriesLinks);
+                console.log(`シリーズリンクを挿入しました: ${publicArticle.file}`);
             }
-
-            // シリーズリンクを挿入
-            contentLines.unshift(seriesLinks);
-            console.log(`シリーズリンクを挿入しました: ${publicArticle.file}`);
 
             // 記事内容を更新
             const updatedContent = contentLines.join('\n').replace(/\n{3,}/g, '\n\n'); // 連続する空行を整理
