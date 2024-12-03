@@ -7,7 +7,7 @@ tags:
   - Ubuntu
   - Docker
   - homeserver
-local_updated_at: '2024-12-03T13:44:34+00:00'
+local_updated_at: '2024-12-03T13:49:38+00:00'
 ---
 
 # OSのインストール
