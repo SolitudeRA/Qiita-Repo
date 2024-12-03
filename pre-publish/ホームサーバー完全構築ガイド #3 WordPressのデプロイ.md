@@ -7,7 +7,7 @@ tags:
   - nginx
   - homeserver
   - self-hosting
-local_updated_at: '2024-12-03T13:49:38+00:00'
+local_updated_at: '2024-12-03T14:43:24+00:00'
 ---
 
 ### はじめに
