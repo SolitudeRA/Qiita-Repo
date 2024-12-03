@@ -31,7 +31,7 @@ jobs:
         run: npm install gray-matter
 
       - name: Parse Articles
-        run: node scripts/parse_articles.js
+        run: node scripts/parse-articles.js
 
       - name: Publish to Qiita (First Pass)
         uses: increments/qiita-cli/actions/publish@v1
