@@ -8,7 +8,7 @@ tags:
   - cicd
   - nginx
   - homeserver
-local_updated_at: '2024-12-11T12:09:11+00:00'
+local_updated_at: '2024-12-11T12:13:53+00:00'
 ---
 
 # はじめに
