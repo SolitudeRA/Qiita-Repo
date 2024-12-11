@@ -1,13 +1,14 @@
 ---
 title: 'ホームサーバー完全構築ガイド #7 DevOpsプラットフォームの構築'
 series: ホームサーバー完全構築ガイド
+type: tech
 tags:
   - devops
   - git
   - cicd
   - nginx
   - homeserver
-local_updated_at: '2024-12-09T18:53:22+00:00'
+local_updated_at: '2024-12-11T12:09:11+00:00'
 ---
 
 # はじめに
