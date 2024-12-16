@@ -5,7 +5,7 @@ series: null
 type: idea
 tags:
   - windows
-local_updated_at: '2024-12-14T10:01:04+00:00'
+local_updated_at: '2024-12-16T10:40:04+00:00'
 ---
 
 # はじめに
