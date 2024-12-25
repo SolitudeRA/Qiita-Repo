@@ -1,6 +1,7 @@
 ---
 title: 'ホームサーバー完全構築ガイド #4 WordPressのデプロイ'
 series: ホームサーバー完全構築ガイド
+emoji: "\U0001F303"
 type: tech
 tags:
   - WordPress
@@ -8,7 +9,7 @@ tags:
   - nginx
   - homeserver
   - self-hosting
-local_updated_at: '2024-12-21T09:55:02+00:00'
+local_updated_at: '2024-12-25T11:16:57+00:00'
 ---
 
 # はじめに
